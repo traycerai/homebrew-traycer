@@ -5,7 +5,7 @@ class TraycerAT113 < Formula
   desc "Traycer CLI - host supervisor, auth, and config surface"
   homepage "https://traycer.ai"
   version "1.1.3"
-  license "Apache-2.0"
+  license "MIT"
 
   keg_only :versioned_formula
 

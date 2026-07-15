@@ -5,7 +5,7 @@ class Traycer < Formula
   desc "Traycer CLI - host supervisor, auth, and config surface"
   homepage "https://traycer.ai"
   version "1.1.6"
-  license "Apache-2.0"
+  license "MIT"
 
   on_macos do
     on_arm do
