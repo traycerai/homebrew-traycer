@@ -1,0 +1,75 @@
+name: rolling-formula-monotonicity
+
+on:
+  pull_request:
+    paths:
+      - Formula/traycer.rb
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: rolling-formula-monotonicity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out current target
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: target
+          persist-credentials: false
+      - name: Check out proposed formula
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: proposed
+          persist-credentials: false
+      - name: Require the rolling formula to advance
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require("node:fs");
+
+          const stableVersion = /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/u;
+
+          function readFormulaVersion(path, label) {
+            const text = fs.readFileSync(path, "utf8");
+            const matches = Array.from(
+              text.matchAll(/^\s*version\s+"([^"]+)"\s*$/gmu),
+              (match) => match[1],
+            );
+            if (matches.length !== 1 || !stableVersion.test(matches[0])) {
+              throw new Error(
+                `${label} must declare exactly one strict stable version; found ${JSON.stringify(matches)}`,
+              );
+            }
+            return matches[0];
+          }
+
+          function compare(left, right) {
+            const leftParts = stableVersion.exec(left).slice(1).map(BigInt);
+            const rightParts = stableVersion.exec(right).slice(1).map(BigInt);
+            for (let index = 0; index < leftParts.length; index += 1) {
+              if (leftParts[index] > rightParts[index]) return 1;
+              if (leftParts[index] < rightParts[index]) return -1;
+            }
+            return 0;
+          }
+
+          const target = readFormulaVersion(
+            "target/Formula/traycer.rb",
+            "target Formula/traycer.rb",
+          );
+          const proposed = readFormulaVersion(
+            "proposed/Formula/traycer.rb",
+            "proposed Formula/traycer.rb",
+          );
+          if (compare(proposed, target) <= 0) {
+            throw new Error(
+              `Formula/traycer.rb must advance strictly from target ${target}; proposed ${proposed} would let a delayed pull request regress the rolling CLI remedy after a compatibility floor is active`,
+            );
+          }
+          console.log(`Rolling formula advances ${target} -> ${proposed}.`);
+          NODE
