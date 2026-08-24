@@ -2,8 +2,6 @@ name: rolling-formula-monotonicity
 
 on:
   pull_request:
-    paths:
-      - Formula/traycer.rb
 
 permissions:
   contents: read
@@ -29,6 +27,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if cmp -s target/Formula/traycer.rb proposed/Formula/traycer.rb; then
+            echo "Formula/traycer.rb is unchanged; the required rolling-formula check passes."
+            exit 0
+          fi
           node <<'NODE'
           const fs = require("node:fs");
 
