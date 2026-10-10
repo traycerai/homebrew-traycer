@@ -3,17 +3,17 @@
 cask "traycer-desktop" do
   arch arm: "arm64", intel: "x64"
 
-  version "1.5.0"
+  version "1.5.1"
 
   on_macos do
     on_arm do
-      sha256 "0ed7b89d9f3bf05bc8a265a0a44eceab8417b801053824f4c9646c50ed65ff71"
-      url "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.0/traycer-desktop-macos-arm64.dmg"
+      sha256 "00bdbf9c8b6ef3047a4bd21377049b265b16f4d7e9451484d2bff2eb908a91ca"
+      url "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.1/traycer-desktop-macos-arm64.dmg"
     end
 
     on_intel do
-      sha256 "93c238d7a492c6d99e1ec1b55e162a8d8db6e84397e6a0cd4aa637ee7b11a556"
-      url "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.0/traycer-desktop-macos-x64.dmg"
+      sha256 "82c1d9b83ad5ee23d80ab893dd1af2980f8582a095b3e61f3d1995be3e81edb6"
+      url "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.1/traycer-desktop-macos-x64.dmg"
     end
 
     depends_on macos: :monterey
@@ -24,8 +24,8 @@ cask "traycer-desktop" do
   on_linux do
     depends_on arch: :x86_64
 
-    sha256 "1aabc3875f8cff331ea89a38601ba5e002bd34d32483c5cc2e5b1247ba23a2ad"
-    url "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.0/traycer-desktop-linux-x86_64.AppImage"
+    sha256 "eda4e8682f4397c8631336f874a14d3615638f912bfd05b3b1be81dff2224081"
+    url "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.1/traycer-desktop-linux-x86_64.AppImage"
 
     appimage "traycer-desktop-linux-x86_64.AppImage"
   end
